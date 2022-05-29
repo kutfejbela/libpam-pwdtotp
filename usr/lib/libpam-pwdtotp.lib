@@ -1,0 +1,117 @@
+#!/bin/bash
+
+libpam_pwdtotp_check_requirements()
+{
+if [ ${#LIBPAM_PWDTOTP_STRING_PASSWORD} -le $LIBPAM_PWDTOTP_NUMBER_TOTPDIGIT ]
+then
+ if [ "$LIBPAM_PWDTOTP_BOOL_DEBUG" == "yes" ]
+ then
+  echo "The given password is too short"
+ fi
+
+ exit 1;
+fi
+
+if [[ ! $LIBPAM_PWDTOTP_NUMBER_TOTPDIGIT =~ ^[6-8]$ ]]
+then
+ if [ "$LIBPAM_PWDTOTP_BOOL_DEBUG" == "yes" ]
+ then
+  echo "config:LIBPAM_PWDTOTP_NUMBER_TOTPDIGIT possible values are 6-8"
+ fi
+
+ exit 2;
+fi
+
+if [[ ! $LIBPAM_PWDTOTP_NUMBER_TOTPTIME =~ ^[1-9][0-9]$ ]]
+then
+ if [ "$LIBPAM_PWDTOTP_BOOL_DEBUG" == "yes" ]
+ then
+  echo "config:LIBPAM_PWDTOTP_NUMBER_TOTPTIME possible values are 10-99"
+ fi
+
+ exit 3;
+fi
+
+if [ ! -x "$LIBPAM_PWDTOTP_COMMAND_CAT" ]
+then
+ if [ "$LIBPAM_PWDTOTP_BOOL_DEBUG" == "yes" ]
+ then
+  echo "config:LIBPAM_PWDTOTP_COMMAND_CAT executable does not exist"
+ fi
+
+ exit 4;
+fi
+
+if [ ! -x "$LIBPAM_PWDTOTP_COMMAND_GREP" ]
+then
+ if [ "$LIBPAM_PWDTOTP_BOOL_DEBUG" == "yes" ]
+ then
+  echo "config:LIBPAM_PWDTOTP_COMMAND_GREP executable does not exist"
+ fi
+
+ exit 5;
+fi
+
+if [ ! -x "$LIBPAM_PWDTOTP_COMMAND_OATHTOOL" ]
+then
+ if [ "$LIBPAM_PWDTOTP_BOOL_DEBUG" == "yes" ]
+ then
+  echo "config:LIBPAM_PWDTOTP_COMMAND_OATHTOOL executable does not exist"
+ fi
+
+ exit 6;
+fi
+
+if [ ! -x "$LIBPAM_PWDTOTP_COMMAND_SHA512SUM" ]
+then
+ if [ "$LIBPAM_PWDTOTP_BOOL_DEBUG" == "yes" ]
+ then
+  echo "config:LIBPAM_PWDTOTP_COMMAND_SHA512SUM executable does not exist"
+ fi
+
+ exit 7;
+fi
+
+if [ ! -f "$LIBPAM_PWDTOTP_FILE_TOTP" ]
+then
+ if [ "$LIBPAM_PWDTOTP_BOOL_DEBUG" == "yes" ]
+ then
+  echo "config:LIBPAM_PWDTOTP_FILE_TOTP file does not exist"
+ fi
+
+ exit 8;
+fi
+
+if [ ! -f "$LIBPAM_PWDTOTP_FILE_PWD" ]
+then
+ if [ "$LIBPAM_PWDTOTP_BOOL_DEBUG" == "yes" ]
+ then
+  echo "config:LIBPAM_PWDTOTP_FILE_PWD file does not exist"
+ fi
+
+ exit 9;
+fi
+}
+
+libpam_pwdtotp_check_pwdtotp()
+{
+if [ "$LIBPAM_PWDTOTP_STRING_FILETOTP" = "" ]
+then
+ if [ "$LIBPAM_PWDTOTP_BOOL_DEBUG" == "yes" ]
+ then
+  echo "TOTP hex secret does not found in the TOTP file"
+ fi
+
+ exit 10;
+fi
+
+if [ "$LIBPAM_PWDTOTP_STRING_FILESHA512PWD" = "" ]
+then
+ if [ "$LIBPAM_PWDTOTP_BOOL_DEBUG" == "yes" ]
+ then
+  echo "Password sha512 hash does not found in the password file"
+ fi
+
+ exit 11;
+fi
+}
